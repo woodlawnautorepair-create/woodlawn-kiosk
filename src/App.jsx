@@ -62,7 +62,7 @@ export default function App(){
   const canGo=()=>{if(step===1)return fm.firstName.trim()&&fm.lastName.trim()&&fm.phone.replace(/\D/g,"").length===10;if(step===2)return fm.year&&fm.make&&fm.model;if(step===3)return fm.services.length>0;if(step===4)return fm.authSigned;return true;};
   const doSh=()=>{setSh(true);setTimeout(()=>setSh(false),500);};
   const genWO=()=>"WO-"+new Date().toISOString().slice(0,10).replace(/-/g,"")+"-"+String(Math.floor(Math.random()*999)+1).padStart(3,"0");
-  const next=()=>{if(!canGo()){doSh();return;}if(step===4){const data={...fm,timestamp:new Date().toLocaleString(),dateISO:new Date().toISOString(),workOrder:genWO()};setDD(data);setDone(true);setShowConf(true);setTimeout(()=>setShowConf(false),4000);try{var img=new Image();img.src=SHEET_URL+"?payload="+encodeURIComponent(JSON.stringify(data));}catch(err){}}else{setDir("right");setStep(p=>p+1);setSearch("");}};
+  const next=()=>{if(!canGo()){doSh();return;}if(step===4){const data={...fm,timestamp:new Date().toLocaleString(),dateISO:new Date().toISOString(),workOrder:genWO()};setDD(data);setDone(true);setShowConf(true);setTimeout(()=>setShowConf(false),4000);try{var sc=document.createElement("script");sc.src=SHEET_URL+"?payload="+encodeURIComponent(JSON.stringify(data));document.head.appendChild(sc);sc.onload=sc.onerror=function(){try{document.head.removeChild(sc);}catch(x){}};}catch(err){}}else{setDir("right");setStep(p=>p+1);setSearch("");}};
   const back=()=>{setDir("left");setStep(p=>p-1);};
   useEffect(()=>{if(done){const t=setTimeout(reset,90000);return()=>clearTimeout(t);}return undefined;},[done,reset]);
   const recs=useMemo(()=>getRecs(fm.year,fm.make,fm.model,fm.mileage),[fm.year,fm.make,fm.model,fm.mileage]);
